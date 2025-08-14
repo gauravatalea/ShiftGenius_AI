@@ -1,0 +1,192 @@
+Project Requirement Document (PRD) – AI-Powered Shift Planning System
+1. Project Overview
+
+We aim to develop an AI-assisted production shift planning system that assigns real employees to production tasks each day while respecting production dependencies, working time models, employee skills, and legal constraints.
+The system should maximize efficiency in completing daily production requirements while ensuring compliance with operational and legal requirements.
+
+This project builds upon an existing simplified algorithm-based version but enhances it to handle real-world employee constraints.
+
+2. Objectives
+
+Automatically generate a daily shift schedule for each production area.
+
+Ensure all production processes are completed on time, respecting process dependencies.
+
+Account for employee working hours, time restrictions, and legal rules.
+
+Assign employees only to tasks they are qualified to perform.
+
+Adapt dynamically if available employees cannot cover planned production.
+
+3. Key Production Areas
+
+Preparation Rooms
+
+Start time: 06:00 (fixed)
+
+Example tasks: peeling, cutting, washing vegetables.
+
+Sorting rule: Items sorted by total quantity (kg) ascending within each room.
+
+Filling Room
+
+Core working time: 09:15 – 17:00
+
+Production must be scheduled backwards from 17:00, so last process finishes exactly at 17:00.
+
+Sorting rule: Items sorted by total quantity (kg) ascending.
+
+4. Scheduling Rules
+4.1 Sorting and Dependency Logic
+
+Sorting: Items are sorted by total quantity (kg) in ascending order in both preparation rooms and filling room.
+
+Dependencies: An item is only scheduled in a room if all previous processes for that item are complete.
+
+Fallback Selection: If the next-largest-quantity item cannot be processed because a previous step is incomplete, choose the next available item in order.
+
+First Item of Day Rule: The first item in any room must be one that starts its process in that room.
+
+4.2 Time Calculation
+
+Filling Room:
+
+Calculate total time for all processes scheduled in the day.
+
+Subtract from 17:00 to determine start time.
+
+Assign employees to cover from start time to 17:00.
+
+Preparation Rooms:
+
+Always start at 06:00.
+
+Assign employees for the exact total time required (even if < 7.7 hours).
+
+4.3 Employee Assignment Rules
+
+Assign employees only to tasks they are qualified for (based on skills matrix).
+
+Respect employee working time models:
+
+Full-time, part-time, fixed shifts, availability windows.
+
+Respect legal constraints:
+
+Break times.
+
+Maximum daily working hours.
+
+Maximum overtime limits.
+
+If there are not enough employees to complete all tasks on time:
+
+Alert production planning.
+
+Allow redistribution or rescheduling of items.
+
+5. Inputs
+
+The system must accept:
+
+Production Orders for the day:
+
+List of items, process steps, total quantities (kg), and required employees per step.
+
+Process Durations:
+
+Time needed per kg or per batch for each process.
+
+Employee Data:
+
+Name, working time model (start/end times, breaks, max hours).
+
+Skills matrix (qualified processes).
+
+Legal restrictions (max overtime, break rules).
+
+Production Area Definitions:
+
+Preparation rooms, filling room, associated processes.
+
+6. Outputs
+
+Shift Plan Table:
+
+Time slots per production area.
+
+Assigned employees per task.
+
+Task dependencies visibly respected.
+
+Daily Employee Utilization Overview:
+
+Employee names, assigned area, task, and total hours.
+
+Production Feasibility Report:
+
+Confirms whether production can be completed with available staff.
+
+Highlights shortages and suggested adjustments.
+
+7. Functional Requirements
+
+Dependency-Aware Scheduling:
+Implement logic to ensure no process starts before its predecessor is complete.
+
+Dynamic Employee Assignment:
+Match employees to tasks considering skills and availability.
+
+Automatic Start Time Calculation:
+Especially for the filling room, starting backward from 17:00.
+
+Real-Time Adjustments:
+Allow reallocation of employees if tasks finish earlier or delays occur.
+
+Reports & Export:
+
+PDF/Excel export of shift plan.
+
+Summary dashboard.
+
+8. Non-Functional Requirements
+
+Performance: Schedule generation in <10 seconds for a full day’s plan.
+
+Scalability: Support 100+ employees and 500+ daily tasks.
+
+User Interface: Web-based, intuitive drag-and-drop adjustments.
+
+Data Security: Employee data must be stored securely (GDPR compliant).
+
+9. Example Workflow
+
+Import daily production orders.
+
+Sort items by total quantity (kg) in each room.
+
+Calculate total process durations.
+
+Schedule preparation rooms from 06:00.
+
+Schedule filling room backward from 17:00.
+
+Assign employees based on:
+
+Availability
+
+Skills
+
+Legal constraints
+
+Generate shift plan.
+
+Validate feasibility and notify if staff shortage exists.
+
+10. Future AI Enhancements
+
+Predict delays and adjust schedules dynamically.
+
+Optimize break times to minimize idle machines.
+
+Suggest cross-training plans to increase employee flexibility.
